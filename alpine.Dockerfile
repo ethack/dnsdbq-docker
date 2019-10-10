@@ -10,9 +10,7 @@ RUN apk --no-cache add \
 
 RUN cd /tmp && \
   wget https://github.com/dnsdb/dnsdbq/archive/${DNSDBQ_RELEASE}.tar.gz && \
-  tar -xf ${DNSDBQ_RELEASE}.tar.gz && \
-  mv dnsdbq-* dnsdbq && \
-  cd dnsdbq && \
+  tar xzf ${DNSDBQ_RELEASE}.tar.gz --strip-components=1 && \
   # requires a patch to compile on alpine
   sed -i -e 's_^#include <sys/errno.h>$_#include <errno.h>_' dnsdbq.c && \
   make
@@ -29,8 +27,8 @@ RUN apk --no-cache add \
     jansson
 
 # mimic "make install"
-COPY --from=builder /tmp/dnsdbq/dnsdbq /usr/local/bin/
-COPY --from=builder /tmp/dnsdbq/dnsdbq.man /usr/local/share/man/man1/dnsdbq.1
+COPY --from=builder /tmp/dnsdbq /usr/local/bin/
+COPY --from=builder /tmp/dnsdbq.man /usr/local/share/man/man1/dnsdbq.1
 
 COPY docker-entrypoint.sh /bin/
 

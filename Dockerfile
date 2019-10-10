@@ -6,13 +6,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libcurl4-openssl-dev \
     libjansson-dev \
+    wget \
   && rm -rf /var/lib/apt/lists/*
 
 RUN cd /tmp && \
   wget https://github.com/dnsdb/dnsdbq/archive/${DNSDBQ_RELEASE}.tar.gz && \
-  tar -xf ${DNSDBQ_RELEASE}.tar.gz && \
-  mv dnsdbq-* dnsdbq && \
-  cd dnsdbq && \
+  tar xzf ${DNSDBQ_RELEASE}.tar.gz --strip-components=1 && \
   make
   # These steps aren't needed due to multi-stage Dockerfile
   # make install && \
@@ -28,8 +27,8 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # mimic "make install"
-COPY --from=builder /tmp/dnsdbq/dnsdbq /usr/local/bin/
-COPY --from=builder /tmp/dnsdbq/dnsdbq.man /usr/local/share/man/man1/dnsdbq.1
+COPY --from=builder /tmp/dnsdbq /usr/local/bin/
+COPY --from=builder /tmp/dnsdbq.man /usr/local/share/man/man1/dnsdbq.1
 
 COPY docker-entrypoint.sh /bin/
 
