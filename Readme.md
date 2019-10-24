@@ -5,13 +5,18 @@ Build Command:
 ```bash
 docker build -t dnsdbq .
 # or
-docker build -f alpine.Dockerfile -t dnsdbq .
+docker build -f alpine.Dockerfile -t dnsdbq:alpine .
 ```
 
 
 Example Usage:
 ```bash
 docker run --rm -e APIKEY=yourapikeyhere dnsdbq
+```
+
+```bash
+cat /path/to/.dnsdb-query.conf
+APIKEY=yourapikeyhere
 ```
 
 ```bash
